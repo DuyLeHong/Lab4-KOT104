@@ -7,6 +7,9 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,10 +37,30 @@ import androidx.compose.ui.unit.dp
 import com.duyle.lab4.ui.theme.Lab4Theme
 
 class MainActivity : ComponentActivity() {
+
+    var startForResult: ActivityResultLauncher<Intent>? = null
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        startForResult = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result: ActivityResult ->
+            if (result.resultCode == RESULT_OK) {
+                //  you will get result here in result.data
+                val data = result.data?.getStringExtra(KEY_DATA_NHANVIEN)
+                Toast.makeText(
+                    baseContext,
+
+                    data,
+                    Toast.LENGTH_LONG
+
+                ).show()
+            }
+        }
+
         setContent {
             Lab4Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
@@ -46,7 +69,7 @@ class MainActivity : ComponentActivity() {
 //                        modifier = Modifier.padding(innerPadding)
 //                    )
 
-                    LoginScreen()
+                    LoginScreen(startForResult)
                 }
             }
         }
@@ -55,7 +78,7 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun LoginScreen(){
+fun LoginScreen(startForResult: ActivityResultLauncher<Intent>? = null){
     val context = LocalContext.current // getApplicationContext ()
     var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -83,7 +106,8 @@ fun LoginScreen(){
                 val nhanvien = NhanVienModel(userName, password)
                 intent.putExtra(KEY_DATA_NHANVIEN, nhanvien)
 
-                context.startActivity(intent)
+                startForResult?.launch(intent)
+                //context.startActivity(intent)
             } else {
                 Toast.makeText(
                     context,

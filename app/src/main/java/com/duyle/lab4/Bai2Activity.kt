@@ -33,6 +33,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class Bai2Activity : ComponentActivity() {
+    override fun onBackPressed() {
+
+        val intent = intent
+        intent.putExtra(KEY_DATA_NHANVIEN, "data nhan vien")
+        setResult(RESULT_OK, intent)
+
+        super.onBackPressed()
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
