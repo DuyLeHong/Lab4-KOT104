@@ -1,6 +1,7 @@
 package com.duyle.lab4
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -67,15 +69,21 @@ fun LoginScreen(){
         Image(painter = painterResource(id =
         R.drawable.ic_launcher_foreground), contentDescription =
         "Logo")
-        TextField(value = userName, onValueChange = {
+        OutlinedTextField(value = userName, onValueChange = {
             userName = it }, label = { Text(text = "UserName") }) // EditText
-        TextField(value = password, onValueChange = {
+        OutlinedTextField(value = password, onValueChange = {
             password = it }, label = { Text(text = "Password") })
         Spacer(modifier = Modifier.height(15.dp))
         Button(onClick = {
             if (userName.isNotBlank() && password.isNotBlank()) {
                 Toast.makeText(context, "Login successful",
                     Toast.LENGTH_LONG).show()
+
+                val intent = Intent(context, Bai2Activity::class.java)
+                val nhanvien = NhanVienModel(userName, password)
+                intent.putExtra(KEY_DATA_NHANVIEN, nhanvien)
+
+                context.startActivity(intent)
             } else {
                 Toast.makeText(
                     context,

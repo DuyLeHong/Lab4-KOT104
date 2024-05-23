@@ -19,12 +19,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -32,6 +35,9 @@ import androidx.core.view.WindowInsetsCompat
 class Bai2Activity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val nhanvien = intent.getSerializableExtra(KEY_DATA_NHANVIEN) as NhanVienModel
+
         setContent {
             Column {
 
@@ -40,6 +46,11 @@ class Bai2Activity : ComponentActivity() {
                     painter = painterResource(id =
                     R.drawable.ic_launcher_foreground),
                     contentDescription = "Logo"
+                )
+
+                Text(text = nhanvien.username,
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(start = 16.dp)
                 )
 
                 val images = listOf(R.drawable.images1, R.drawable.images2,
