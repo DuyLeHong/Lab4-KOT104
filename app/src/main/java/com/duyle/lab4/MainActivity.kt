@@ -21,7 +21,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,6 +33,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.duyle.lab4.ui.theme.Lab4Theme
 
 class MainActivity : ComponentActivity() {
@@ -62,6 +65,15 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
+
+            val navController = rememberNavController()
+
+            NavHost(navController = navController, startDestination = "login") {
+                composable("login") { LoginScreen(startForResult, navController) }
+                composable("page2") { Greeting(name = "Trang chu", Modifier.padding(16.dp)) }
+                /*...*/
+            }
+
             Lab4Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) {
 //                    Greeting(
@@ -69,57 +81,75 @@ class MainActivity : ComponentActivity() {
 //                        modifier = Modifier.padding(innerPadding)
 //                    )
 
-                    LoginScreen(startForResult)
+                    AppNavHost(navController = rememberNavController())
+                    //navController.navigate("login")
+                    //LoginScreen(startForResult, navController)
                 }
             }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun LoginScreen(startForResult: ActivityResultLauncher<Intent>? = null){
+fun LoginScreen(
+    startForResult: ActivityResultLauncher<Intent>? = null,
+    navController: NavHostController
+) {
     val context = LocalContext.current // getApplicationContext ()
     var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    Column (
+
+
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         Spacer(modifier = Modifier.height(30.dp))
-        Image(painter = painterResource(id =
-        R.drawable.ic_launcher_foreground), contentDescription =
-        "Logo")
+        Image(
+            painter = painterResource(
+                id =
+                R.drawable.ic_launcher_foreground
+            ), contentDescription =
+            "Logo"
+        )
         OutlinedTextField(value = userName, onValueChange = {
-            userName = it }, label = { Text(text = "UserName") }) // EditText
+            userName = it
+        }, label = { Text(text = "UserName") }) // EditText
         OutlinedTextField(value = password, onValueChange = {
-            password = it }, label = { Text(text = "Password") })
+            password = it
+        }, label = { Text(text = "Password") })
         Spacer(modifier = Modifier.height(15.dp))
-        Button(onClick = {
-            if (userName.isNotBlank() && password.isNotBlank()) {
-                Toast.makeText(context, "Login successful",
-                    Toast.LENGTH_LONG).show()
+        Button(
+            onClick = {
+                if (userName.isNotBlank() && password.isNotBlank()) {
+                    Toast.makeText(
+                        context, "Login successful",
+                        Toast.LENGTH_LONG
+                    ).show()
 
-                val intent = Intent(context, Bai2Activity::class.java)
-                val nhanvien = NhanVienModel(userName, password)
-                intent.putExtra(KEY_DATA_NHANVIEN, nhanvien)
+                    val intent = Intent(context, Bai2Activity::class.java)
+                    val nhanvien = NhanVienModel(userName, password)
+                    intent.putExtra(KEY_DATA_NHANVIEN, nhanvien)
 
-                startForResult?.launch(intent)
-                //context.startActivity(intent)
-            } else {
-                Toast.makeText(
-                    context,
+                    navController.navigate(NavigationItem.Home.route)
+                    //startForResult?.launch(intent)
+                    //context.startActivity(intent)
+                } else {
+                    Toast.makeText(
+                        context,
 
-                    "Please enter username and password",
-                    Toast.LENGTH_LONG
+                        "Please enter username and password",
+                        Toast.LENGTH_LONG
 
-                ).show()
-            }
-        }, colors = ButtonDefaults.buttonColors(
-            containerColor = Color.DarkGray,
-            contentColor = Color.White)) {
+                    ).show()
+                }
+            }, colors = ButtonDefaults.buttonColors(
+                containerColor = Color.DarkGray,
+                contentColor = Color.White
+            )
+        ) {
             Text(text = "Login")
         }
     }
