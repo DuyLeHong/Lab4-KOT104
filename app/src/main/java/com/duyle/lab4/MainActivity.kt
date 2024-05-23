@@ -133,7 +133,7 @@ fun LoginScreen(
                     val nhanvien = NhanVienModel(userName, password)
                     intent.putExtra(KEY_DATA_NHANVIEN, nhanvien)
 
-                    navController.navigate(NavigationItem.Home.route)
+                    navController.navigate("${NavigationItem.Home.route}/${userName}/${password}")
                     //startForResult?.launch(intent)
                     //context.startActivity(intent)
                 } else {
